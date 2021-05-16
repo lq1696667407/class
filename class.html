@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>点名册</title>
+  <link rel="stylesheet" href="./css/element.css">
+  <script src="./js/vue.js"></script>
+  <script src="./js/element.js"></script>
+</head>
+<style>
+  .header {
+      display: flex;
+      justify-content: space-between;
+      align-content: center;
+      margin-bottom: 15px;
+  }
+  .h32 {
+      height: 32px;
+      line-height: 32px;
+  }
+</style>
+<body>
+<div id="app">
+  <div class="class">
+    <class class="header h32">
+      <span>18网新</span>
+      <el-button type="success" size="mini" circle @click="clearHandel">clr</el-button>
+    </class>
+    <el-table
+        :data="students"
+        border
+        style="width: 100%">
+      <el-table-column
+          prop="name"
+          label="姓名"
+          min-width="1">
+      </el-table-column>
+      <el-table-column
+          prop="state"
+          label="状态"
+          min-width="4">
+        <template slot-scope="scope">
+          <el-radio v-model="scope.row.state" label="1" @change="changeHandle">出勤</el-radio>
+          <el-radio v-model="scope.row.state" label="0" @change="changeHandle">缺勤</el-radio>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+</div>
+</body>
+<script type="application/javascript">
+  var students = [
+    {name: '李嘉', state: '-1'},
+    {name: '张庭霖', state: '-1'},
+    {name: '夏国强', state: '-1'},
+    {name: '苏洲', state: '-1'},
+    {name: '许鹏飞', state: '-1'},
+    {name: '柳磊', state: '-1'},
+    {name: '肖科宇', state: '-1'},
+    {name: '胡嘉嘉', state: '-1'},
+    {name: '周海涛', state: '-1'},
+    {name: '刘超', state: '-1'},
+    {name: '杨海涛', state: '-1'},
+    {name: '谢炀坤', state: '-1'},
+    {name: '张朕', state: '-1'},
+    {name: '张洋', state: '-1'},
+    {name: '向炤炜', state: '-1'},
+    {name: '杜彦熳', state: '-1'},
+    {name: '郑棋方', state: '-1'},
+    {name: '金蕊', state: '-1'},
+    {name: '孙沐炜', state: '-1'},
+    {name: '胡璐', state: '-1'},
+    {name: '唐莉', state: '-1'},
+    {name: '罗莎', state: '-1'},
+    {name: '王敏', state: '-1'},
+    {name: '刘倩', state: '-1'},
+    {name: '周玮', state: '-1'},
+    {name: '陈丽', state: '-1'},
+    {name: '刘红', state: '-1'},
+    {name: '杨迎', state: '-1'},
+    {name: '熊林桃', state: '-1'},
+    {name: '黎雯雯', state: '-1'},
+    {name: '雷灵芝', state: '-1'},
+    {name: '邓星宇', state: '-1'},
+    {name: '廖诗渝', state: '-1'},
+    {name: '张珈荧', state: '-1'},
+    {name: '袁郁茹', state: '-1'},
+    {name: '张传颖', state: '-1'},
+    {name: '陈维', state: '-1'},
+    {name: '熊佳佳', state: '-1'},
+    {name: '王林莉', state: '-1'},
+    {name: '陈佳佳', state: '-1'},
+    {name: '成莉', state: '-1'},
+    {name: '刘星', state: '-1'},
+    {name: '李玮', state: '-1'},
+    {name: '熊巧玲', state: '-1'},
+    {name: '赵月兰', state: '-1'},
+    {name: '刘慧琴', state: '-1'},
+    {name: '姚晓雪', state: '-1'},
+    {name: '曹钰婕', state: '-1'},
+    {name: '黄巧', state: '-1'},
+  ]
+  new Vue({
+    el: '#app',
+
+    data: function () {
+      return {
+        students: []
+      }
+    },
+
+    methods: {
+      clearHandel: function () {
+        var newStudents =  JSON.parse(JSON.stringify(students))
+        localStorage.setItem('class', JSON.stringify(newStudents))
+        this.students = newStudents
+      },
+      changeHandle: function () {
+        localStorage.setItem('class', JSON.stringify(this.students))
+      }
+    },
+
+    created: function () {
+      var newStudents = localStorage.getItem('class')
+      newStudents = newStudents ? JSON.parse(newStudents) : JSON.parse(JSON.stringify(students))
+      this.students = newStudents
+    }
+  })
+</script>
+</html>
