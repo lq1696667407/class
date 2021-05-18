@@ -17,9 +17,49 @@
       align-content: center;
       margin-bottom: 15px;
   }
+  .header span {
+      font-size: 18px;
+      text-shadow: 2px 2px 2px #333333;
+      color: black;
+  }
   .h32 {
       height: 32px;
       line-height: 32px;
+  }
+  .success.is-checked .el-radio__label, .success .el-radio__label, .success {
+      color: #67c23a!important;
+  }
+  .error.is-checked .el-radio__label, .error .el-radio__label, .error {
+      color: #f56c6c!important;
+  }
+  .warning.is-checked .el-radio__label, .warning .el-radio__label, .warning {
+      color: #e6a23c!important;
+  }
+  .footer {
+      height: 32px;
+      line-height: 32px;
+      font-size: 16px;
+      color: #666666;
+      margin-top: 15px;
+  }
+  .f18b {
+      font-size: 18px;
+      font-weight: bold;
+  }
+  .rul {
+      text-decoration-line: underline;
+      text-decoration-color: red;
+  }
+  .tooltip-wrap{
+      display: flex;
+      flex-wrap: wrap;
+      line-height: 32px;
+      font-size: 16px;
+      color: #606266;
+  }
+  .tooltip-wrap span {
+      display: inline-block;
+      width: 5em;
   }
 </style>
 <body>
@@ -43,15 +83,46 @@
           label="状态"
           min-width="4">
         <template slot-scope="scope">
-          <el-radio v-model="scope.row.state" label="1" @change="changeHandle">出勤</el-radio>
-          <el-radio v-model="scope.row.state" label="0" @change="changeHandle">缺勤</el-radio>
+          <el-radio :class="scope.row.state ==='1' ? 'success' : ''" v-model="scope.row.state" label="1" @change="changeHandle">出勤</el-radio>
+          <el-radio :class="scope.row.state ==='0' ? 'error' : ''" v-model="scope.row.state" label="0" @change="changeHandle">缺勤</el-radio>
+          <el-radio :class="scope.row.state ==='2' ? 'warning' : ''" v-model="scope.row.state" label="2" @change="changeHandle">请假</el-radio>
         </template>
       </el-table-column>
     </el-table>
+    <div class="footer">
+      出勤状况<span class="ul">（嘉嘉不参与任何一种状态计数的）</span>: 应到<span class="f18b" v-text="students.length-1"></span>人，
+      实到<span class="f18b success" v-text="attendanceStatus.attendance.length"></span>人，
+      <template v-for="(itm, idx) in Object.keys(attendanceStatus)">
+        <template v-if="itm !== 'attendance'">
+          {{text[idx]}}
+          <el-popover
+            placement="top-start"
+            width="50vw"
+            trigger="click">
+          <div class="tooltip-wrap">
+            <span v-for="(item, index) in attendanceStatus[itm]" v-text="item.name" :key="index"></span>
+          </div>
+          <span slot="reference"
+                :class="itm === 'absentFromWork' ? 'error' : itm === 'askForLeave' ? 'warning' : ''"
+                class="f18b " v-text="attendanceStatus[itm].length"></span>
+        </el-popover>人，
+        </template>
+      </template>
+
+      <!--请假<span class="f18b error" v-text="attendanceStatus.askForLeave.length"></span>人，
+      未点到名的<span class="f18b" v-text="attendanceStatus.noChecked.length"></span>人。-->
+   </div>
+
+
   </div>
 </div>
 </body>
 <script type="application/javascript">
+  var text = {
+    1: '缺勤',
+    2: '请假',
+    3: '未点到名的',
+  }
   var students = [
     {name: '李嘉', state: '-1'},
     {name: '张庭霖', state: '-1'},
@@ -67,7 +138,7 @@
     {name: '谢炀坤', state: '-1'},
     {name: '张朕', state: '-1'},
     {name: '张洋', state: '-1'},
-    {name: '向炤炜', state: '-1'},
+    /*{name: '向炤炜', state: '-1'},*/
     {name: '杜彦熳', state: '-1'},
     {name: '郑棋方', state: '-1'},
     {name: '金蕊', state: '-1'},
@@ -108,16 +179,39 @@
 
     data: function () {
       return {
-        students: []
+        students: [],
+        text: text
+      }
+    },
+
+    computed: {
+      attendanceStatus: function () {
+        var absentFromWork = [], askForLeave = [], attendance = [], noChecked = []
+        this.students.forEach(function (student) {
+          if (student.name === '李嘉') {
+            return
+          }
+          student.state === '0' ? absentFromWork.push(_clone(student)) : student.state === '2' ?
+              askForLeave.push(_clone(student)) : student.state === '1' ?
+                  attendance.push(_clone(student)) : noChecked.push(_clone(student))
+        })
+        return {
+          attendance: attendance,
+          absentFromWork: absentFromWork,
+          askForLeave: askForLeave,
+          noChecked: noChecked
+        }
       }
     },
 
     methods: {
+      /* 清除状态 */
       clearHandel: function () {
         var newStudents =  JSON.parse(JSON.stringify(students))
         localStorage.setItem('class', JSON.stringify(newStudents))
         this.students = newStudents
       },
+      /* 状态发生改变  */
       changeHandle: function () {
         localStorage.setItem('class', JSON.stringify(this.students))
       }
@@ -129,5 +223,9 @@
       this.students = newStudents
     }
   })
+
+  function _clone(obj) {
+    return JSON.parse(JSON.stringify(obj))
+  }
 </script>
 </html>
