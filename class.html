@@ -90,7 +90,7 @@
       </el-table-column>
     </el-table>
     <div class="footer">
-      出勤状况<span class="ul">（嘉嘉不参与任何一种状态计数的）</span>: 应到<span class="f18b" v-text="students.length-1"></span>人，
+      出勤状况<span class="ul">（嘉嘉不参与任何一种状态计数的；可查看缺勤，请假，未点到的人名）</span>: 应到<span class="f18b" v-text="students.length-1"></span>人，
       实到<span class="f18b success" v-text="attendanceStatus.attendance.length"></span>人，
       <template v-for="(itm, idx) in Object.keys(attendanceStatus)">
         <template v-if="itm !== 'attendance'">
@@ -108,9 +108,6 @@
         </el-popover>人，
         </template>
       </template>
-
-      <!--请假<span class="f18b error" v-text="attendanceStatus.askForLeave.length"></span>人，
-      未点到名的<span class="f18b" v-text="attendanceStatus.noChecked.length"></span>人。-->
    </div>
 
 
